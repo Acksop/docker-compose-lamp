@@ -1,4 +1,4 @@
-FROM php:8.3-apache-bookworm
+FROM php:8.0.19-apache-buster
 
 # Surpresses debconf complaints of trying to install apt packages interactively
 # https://github.com/moby/moby/issues/4032#issuecomment-192327844
@@ -36,12 +36,12 @@ openssl && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install xdebug
-RUN pecl install xdebug-3.3.1 && \
+RUN pecl install xdebug-3.1.4 && \
     docker-php-ext-enable xdebug && \
     mkdir /var/log/xdebug
 
 # Install redis
-RUN pecl install redis-6.0.2 && \
+RUN pecl install redis-5.3.3 && \
     docker-php-ext-enable redis
 
 # Install imagick
@@ -58,9 +58,11 @@ RUN apt-get install -y nodejs
 #Install Tools for screenshot
 RUN apt-get -y install cutycapt xvfb
 
+
+# Workarround until imagick is available in pecl with php8 support
 # Imagick Commit to install
 # https://github.com/Imagick/imagick
-ARG IMAGICK_COMMIT="28f27044e435a2b203e32675e942eb8de620ee58"
+ARG IMAGICK_COMMIT="132a11fd26675db9eb9f0e9a3e2887c161875206"
 
 RUN cd /usr/local/src && \
     git clone https://github.com/Imagick/imagick && \
@@ -73,6 +75,7 @@ RUN cd /usr/local/src && \
     cd .. && \
     rm -rf imagick && \
     docker-php-ext-enable imagick
+
 
 # Other PHP7 Extensions
 
@@ -177,7 +180,6 @@ RUN docker-php-ext-install bz2
 
 # Install Soap Extension
 RUN docker-php-ext-install soap
-
 
 # Install Freetype 
 RUN apt-get -y update && \

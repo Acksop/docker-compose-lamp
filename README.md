@@ -23,6 +23,12 @@ As of now, we have several different PHP versions. Use appropriate php version a
 - 8.2.x
 - 8.3.x
 
+But in this version PHP >= 7.4 comes with a lot of things like :
+
+- Composer
+- Node
+- lots of php extension
+
 ## Installation
 
 - Clone this repository on your local computer

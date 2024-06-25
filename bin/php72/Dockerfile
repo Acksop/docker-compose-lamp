@@ -8,12 +8,6 @@ FROM php:7.2-apache-stretch
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Fix the source.list for stretch
-RUN printf "deb http://archive.debian.org/debian/ stretch main\n" > /etc/apt/sources.list && \
-    printf "deb-src http://archive.debian.org/debian/ stretch main\n" >>  /etc/apt/sources.list && \
-    printf "deb http://archive.debian.org/debian-security stretch/updates main\n" >>  /etc/apt/sources.list && \
-    printf "deb-src http://archive.debian.org/debian-security stretch/updates main" >>  /etc/apt/sources.list
-
 RUN apt-get -y update --fix-missing --no-install-recommends
 RUN apt-get -y upgrade
 
@@ -44,7 +38,6 @@ RUN docker-php-ext-install mysqli
 RUN docker-php-ext-install curl
 RUN docker-php-ext-install tokenizer
 RUN docker-php-ext-install json
-RUN docker-php-ext-install bcmath
 
 RUN apt-get -y install zlib1g-dev
 RUN docker-php-ext-install zip
@@ -58,12 +51,6 @@ RUN docker-php-ext-install gettext
 RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ 
 RUN docker-php-ext-install -j$(nproc) gd
-
-# Insure an SSL directory exists
-RUN mkdir -p /etc/apache2/ssl
-
-# Enable SSL support
-RUN a2enmod ssl && a2enmod rewrite
 
 # Enable apache modules
 RUN a2enmod rewrite headers
